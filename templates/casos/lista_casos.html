@@ -1,0 +1,63 @@
+{% extends 'casos/base.html' %}
+
+{% block titulo %}Casos{% endblock %}
+
+{% block contenido %}
+<div class="cabecera">
+    <div>
+        <h1>Casos del estudio</h1>
+        <p class="subtitulo">{{ casos|length }} caso{{ casos|length|pluralize }} encontrado{{ casos|length|pluralize }}</p>
+    </div>
+    <form method="get" action="{% url 'lista_casos' %}" class="filtro">
+        <label for="estado">Estado</label>
+        <select name="estado" id="estado">
+            <option value="">Todos</option>
+            {% for estado in estados %}
+            <option value="{{ estado.id }}" {% if estado.id|stringformat:"s" == estado_actual %}selected{% endif %}>{{ estado.nombre|capfirst }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="boton">Filtrar</button>
+    </form>
+</div>
+
+{% if desde_cookie %}
+<div class="alerta alerta-info">Filtro aplicado automáticamente con la cookie <strong>ultimo_estado</strong> (último estado consultado).</div>
+{% endif %}
+
+<div class="tarjeta">
+    <table>
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Título</th>
+                <th>Cliente</th>
+                <th>Estado</th>
+                <th>Abogados asignados</th>
+                <th class="numero">Total pagado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for caso in casos %}
+            <tr>
+                <td class="codigo"><a href="{% url 'detalle_caso' caso.id %}">{{ caso.codigo }}</a></td>
+                <td>{{ caso.titulo }}</td>
+                <td>{{ caso.cliente.nombres }}</td>
+                <td>
+                    <span class="estado {% if caso.estado.permite_pagos %}estado-si{% else %}estado-no{% endif %}">{{ caso.estado.nombre|capfirst }}</span>
+                </td>
+                <td>
+                    {% for abogado in caso.abogados.all %}
+                        {{ abogado.get_full_name|default:abogado.username }}{% if not forloop.last %}<br>{% endif %}
+                    {% empty %}
+                        <em>Sin asignar</em>
+                    {% endfor %}
+                </td>
+                <td class="numero">S/ {{ caso.total_pagado|floatformat:2 }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6" class="vacio">No hay casos registrados.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

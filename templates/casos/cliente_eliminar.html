@@ -1,0 +1,27 @@
+{% extends 'casos/base.html' %}
+
+{% block titulo %}Eliminar cliente{% endblock %}
+
+{% block contenido %}
+<h1>Eliminar cliente</h1>
+<p class="subtitulo">Esta acción no se puede deshacer.</p>
+
+<div class="tarjeta formulario">
+    <p>¿Está seguro de eliminar al cliente <strong>{{ cliente.nombres }}</strong>
+       ({% if cliente.documento|length == 11 %}RUC{% else %}DNI{% endif %} {{ cliente.documento }})?</p>
+
+    {% with total=cliente.caso_set.count %}
+    {% if total %}
+        <div class="aviso">El cliente tiene {{ total }} caso{{ total|pluralize }} registrado{{ total|pluralize }}; el sistema no permitirá eliminarlo.</div>
+    {% endif %}
+    {% endwith %}
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="botones">
+            <button type="submit" class="boton boton-peligro">Sí, eliminar</button>
+            <a class="boton boton-sec" href="{% url 'lista_clientes' %}">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

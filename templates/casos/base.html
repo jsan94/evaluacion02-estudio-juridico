@@ -1,0 +1,39 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block titulo %}Portal{% endblock %} | Vargas &amp; Asociados</title>
+    <link rel="stylesheet" href="{% static 'casos/estilos.css' %}">
+</head>
+<body>
+    <header class="encabezado">
+        <div class="contenedor">
+            <a class="marca" href="{% url 'lista_casos' %}">Vargas &amp; Asociados <span>Portal de abogados</span></a>
+            <nav class="menu">
+                <a href="{% url 'lista_clientes' %}" {% if 'cliente' in request.resolver_match.url_name %}class="activo"{% endif %}>Clientes</a>
+                <a href="{% url 'lista_casos' %}" {% if 'caso' in request.resolver_match.url_name %}class="activo"{% endif %}>Casos</a>
+                <a href="{% url 'admin:index' %}">Administrador</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="contenedor">
+            {% for mensaje in messages %}
+                <div class="alerta alerta-{{ mensaje.tags }}">{{ mensaje }}</div>
+            {% endfor %}
+
+            {% block contenido %}{% endblock %}
+        </div>
+    </main>
+
+    <footer class="pie">
+        <div class="contenedor">
+            <span>&copy; {% now "Y" %} Vargas &amp; Asociados – Gestión de Casos</span>
+            <span>Portal interno del estudio</span>
+        </div>
+    </footer>
+</body>
+</html>

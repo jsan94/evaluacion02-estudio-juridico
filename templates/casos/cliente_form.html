@@ -1,0 +1,44 @@
+{% extends 'casos/base.html' %}
+
+{% block titulo %}{{ titulo }}{% endblock %}
+
+{% block contenido %}
+<h1>{{ titulo }}</h1>
+<p class="subtitulo">Complete los datos del cliente. Todos los campos son obligatorios.</p>
+
+{% if errores %}
+<div class="alerta alerta-error">
+    No se pudo guardar el cliente:
+    <ul>
+        {% for error in errores %}<li>{{ error }}</li>{% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+<div class="tarjeta formulario">
+    <form method="post">
+        {% csrf_token %}
+        <div class="campo">
+            <label for="nombres">Nombres o razón social</label>
+            <input type="text" id="nombres" name="nombres" value="{{ cliente.nombres }}" maxlength="150" required>
+        </div>
+        <div class="campo">
+            <label for="documento">Documento (DNI o RUC)</label>
+            <input type="text" id="documento" name="documento" value="{{ cliente.documento }}" maxlength="11" required>
+            <small>DNI de 8 dígitos o RUC de 11 dígitos.</small>
+        </div>
+        <div class="campo">
+            <label for="telefono">Teléfono</label>
+            <input type="text" id="telefono" name="telefono" value="{{ cliente.telefono }}" maxlength="15" required>
+        </div>
+        <div class="campo">
+            <label for="correo">Correo electrónico</label>
+            <input type="text" id="correo" name="correo" value="{{ cliente.correo }}" required>
+        </div>
+        <div class="botones">
+            <button type="submit" class="boton">Guardar</button>
+            <a class="boton boton-sec" href="{% url 'lista_clientes' %}">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
